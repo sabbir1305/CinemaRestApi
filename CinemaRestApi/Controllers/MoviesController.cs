@@ -61,6 +61,7 @@ namespace CinemaRestApi.Controllers
             }
             dbMovie.Name = movie.Name;
             dbMovie.Language = movie.Language;
+            dbMovie.Rating = movie.Rating;
             _dbContext.SaveChanges();
             return Ok("Record Updated Successfully.");
         }

@@ -56,7 +56,7 @@ namespace CinemaRestApi
             app.UseHttpsRedirection();
 
             app.UseRouting();
-            dbContext.Database.EnsureCreated();
+          //  dbContext.Database.EnsureCreated();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
