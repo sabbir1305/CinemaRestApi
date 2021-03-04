@@ -1,4 +1,5 @@
-﻿using CinemaRestApi.Models;
+﻿using CinemaRestApi.Data;
+using CinemaRestApi.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -18,28 +19,48 @@ namespace CinemaRestApi.Controllers
             new Movie(){ Id=1,Name="Mission Impossible2",Language="English"}
         };
 
+        private CinemaDbContext _dbContext;
+
+        public MoviesController(CinemaDbContext dbContext)
+        {
+            _dbContext = dbContext;
+        }
         [HttpGet]
         public IEnumerable<Movie> Get()
         {
-            return movies;
+            return _dbContext.Movies;
         }
+
+        [HttpGet("{id}")]
+        public Movie Get(int id)
+        {
+            return _dbContext.Movies.Find(id);
+        }
+
 
         [HttpPost]
         public void Post([FromBody]Movie movie)
         {
-            movies.Add(movie);
+            _dbContext.Movies.Add(movie);
+
+            _dbContext.SaveChanges();
         }
 
         [HttpPut("{id}")]
         public void Put(int id,[FromBody] Movie movie)
         {
-            movies[id] = movie;
+           var dbMovie = _dbContext.Movies.Find(id);
+            dbMovie.Name = movie.Name;
+            dbMovie.Language = movie.Language;
+            _dbContext.SaveChanges();
         }
 
         [HttpDelete("{id}")]
         public void Delete(int id)
         {
-            movies.RemoveAt(id);
+            var movie = _dbContext.Movies.Find(id);
+            _dbContext.Remove(movie);
+            _dbContext.SaveChanges();
         }
     }
 }
