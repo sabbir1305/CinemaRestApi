@@ -13,11 +13,7 @@ namespace CinemaRestApi.Controllers
     [ApiController]
     public class MoviesController : ControllerBase
     {
-        private static List<Movie> movies = new List<Movie>
-        {
-            new Movie(){ Id=0,Name="Mission Impossible",Language="English"},
-            new Movie(){ Id=1,Name="Mission Impossible2",Language="English"}
-        };
+
 
         private CinemaDbContext _dbContext;
 
@@ -26,41 +22,62 @@ namespace CinemaRestApi.Controllers
             _dbContext = dbContext;
         }
         [HttpGet]
-        public IEnumerable<Movie> Get()
+        public IActionResult  Get()
         {
-            return _dbContext.Movies;
+            //   return _dbContext.Movies;
+
+            return StatusCode(StatusCodes.Status200OK,_dbContext.Movies);
         }
 
         [HttpGet("{id}")]
-        public Movie Get(int id)
+        public IActionResult Get(int id)
         {
-            return _dbContext.Movies.Find(id);
+            var movie = _dbContext.Movies.Find(id);
+           if (movie == null)
+            {
+                return NotFound("No record found against this id");
+            }
+
+            return Ok(movie) ;
         }
 
 
         [HttpPost]
-        public void Post([FromBody]Movie movie)
+        public IActionResult Post([FromBody]Movie movie)
         {
             _dbContext.Movies.Add(movie);
 
             _dbContext.SaveChanges();
+            return StatusCode(StatusCodes.Status201Created);
         }
 
         [HttpPut("{id}")]
-        public void Put(int id,[FromBody] Movie movie)
+        public IActionResult Put(int id,[FromBody] Movie movie)
         {
            var dbMovie = _dbContext.Movies.Find(id);
+            if (movie == null)
+            {
+                return NotFound("No record found against this id");
+            }
             dbMovie.Name = movie.Name;
             dbMovie.Language = movie.Language;
             _dbContext.SaveChanges();
+            return Ok("Record Updated Successfully.");
         }
 
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        public IActionResult Delete(int id)
         {
             var movie = _dbContext.Movies.Find(id);
+            if (movie == null)
+            {
+                return NotFound("No record found against this id");
+            }
+
             _dbContext.Remove(movie);
             _dbContext.SaveChanges();
+
+            return Ok("Record Deleted");
         }
     }
 }
