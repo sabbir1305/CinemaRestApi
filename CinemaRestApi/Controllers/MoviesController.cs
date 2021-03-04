@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -42,9 +43,30 @@ namespace CinemaRestApi.Controllers
         }
 
 
+        //[HttpPost]
+        //public IActionResult Post([FromBody]Movie movie)
+        //{
+        //    _dbContext.Movies.Add(movie);
+
+        //    _dbContext.SaveChanges();
+        //    return StatusCode(StatusCodes.Status201Created);
+        //}
+
+
         [HttpPost]
-        public IActionResult Post([FromBody]Movie movie)
+        public IActionResult Post([FromForm] Movie movie)
         {
+           var imgId = Guid.NewGuid();
+            var imgUrl = imgId + ".jpg";
+           var filePath = Path.Combine("wwwroot", imgUrl);
+            if (movie.Image != null)
+            {
+                using (var fileStream = new FileStream(filePath,FileMode.Create))
+                {
+                    movie.Image.CopyTo(fileStream);
+                }
+            }
+            movie.ImageUrl = imgUrl;
             _dbContext.Movies.Add(movie);
 
             _dbContext.SaveChanges();
@@ -52,13 +74,28 @@ namespace CinemaRestApi.Controllers
         }
 
         [HttpPut("{id}")]
-        public IActionResult Put(int id,[FromBody] Movie movie)
+        public IActionResult Put(int id,[FromForm] Movie movie)
         {
            var dbMovie = _dbContext.Movies.Find(id);
             if (movie == null)
             {
                 return NotFound("No record found against this id");
             }
+
+            var imgId = Guid.NewGuid();
+            var imgUrl = imgId + ".jpg";
+            var filePath = Path.Combine("wwwroot", imgUrl);
+            if (movie.Image != null)
+            {
+                using (var fileStream = new FileStream(filePath, FileMode.Create))
+                {
+                    movie.Image.CopyTo(fileStream);
+                    dbMovie.ImageUrl = imgUrl;
+                }
+            }
+
+
+
             dbMovie.Name = movie.Name;
             dbMovie.Language = movie.Language;
             dbMovie.Rating = movie.Rating;
