@@ -30,6 +30,7 @@ namespace CinemaRestApi
         {
 
             services.AddControllers();
+            services.AddMvc().AddXmlDataContractSerializerFormatters();
 
             services.AddDbContext<CinemaDbContext>(opt =>
              opt.UseSqlServer(Configuration.GetConnectionString("sqlConnection"))
