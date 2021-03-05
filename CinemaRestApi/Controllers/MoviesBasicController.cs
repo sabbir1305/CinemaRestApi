@@ -12,13 +12,13 @@ namespace CinemaRestApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class MoviesController : ControllerBase
+    public class MoviesBasicController : ControllerBase
     {
 
 
         private CinemaDbContext _dbContext;
 
-        public MoviesController(CinemaDbContext dbContext)
+        public MoviesBasicController(CinemaDbContext dbContext)
         {
             _dbContext = dbContext;
         }
