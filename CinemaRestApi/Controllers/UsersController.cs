@@ -59,7 +59,8 @@ namespace CinemaRestApi.Controllers
             var claims = new[]
             {
                 new Claim(JwtRegisteredClaimNames.Email,user.Email),
-                new Claim(ClaimTypes.Email,user.Email)
+                new Claim(ClaimTypes.Email,user.Email),
+                new Claim(ClaimTypes.Role,userEmail.Role)
             };
             var token = _auth.GenerateAccessToken(claims);
 

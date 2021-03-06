@@ -1,9 +1,12 @@
 using CinemaRestApi.Data;
+using CinemaRestApi.Services;
+using MaxMind.GeoIP2;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -38,7 +41,10 @@ namespace CinemaRestApi
             services.AddDbContext<CinemaDbContext>(opt =>
              opt.UseSqlServer(Configuration.GetConnectionString("sqlConnection"))
             );
-
+            services.AddTransient<IMovie, MoviesRepo>();
+            services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
+            services.Configure<WebServiceClientOptions>(Configuration.GetSection("MaxMind"));
+            services.AddHttpClient<WebServiceClient>();
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options =>
                 {
