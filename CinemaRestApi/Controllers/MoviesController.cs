@@ -119,8 +119,13 @@ namespace CinemaRestApi.Controllers
             return Ok("Record Deleted");
         }
 
-
-
+        [Authorize]
+        [HttpGet("[action]")]
+        public IActionResult FindMovies(string movieName)
+        {
+            var allMovies = _movieRepo.FindMovies(movieName);
+            return Ok(allMovies);
+        } 
 
 
         //[HttpGet]

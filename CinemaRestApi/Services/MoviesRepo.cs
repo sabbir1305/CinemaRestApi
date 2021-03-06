@@ -28,6 +28,22 @@ namespace CinemaRestApi.Services
             _dbContext.Movies.Remove(movie);
         }
 
+        public IList<MovieFindDto> FindMovies(string name)
+        {
+
+            var query = _dbContext.Movies.Where(x=>x.Name.ToLower().StartsWith(name.ToLower())).Select(x =>
+             new MovieFindDto
+             {
+                 Id = x.Id,
+              
+                 ImageUrl = x.ImageUrl,
+              
+                 Name = x.Name
+              
+             });
+            return query.ToList();
+        }
+
         public IList<MovieDto> GetAllMovies(SearchParamDto search)
         {
             var query = _dbContext.Movies.Select(x =>

@@ -13,6 +13,7 @@ namespace CinemaRestApi.Services
     {
 
         IList<MovieDto> GetAllMovies(SearchParamDto search);
+        IList<MovieFindDto> FindMovies(string name);
         Movie MovieDetail(int id);
 
         void AddMovie(Movie movie);
